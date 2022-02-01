@@ -31,12 +31,31 @@
 
 #define RASPA_IOC_MAGIC 'r'
 
-#define RASPA_IRQ_WAIT          _IO(RASPA_IOC_MAGIC, 1)
+#define RASPA_IRQ_WAIT          _IOR(RASPA_IOC_MAGIC, 1,unsigned long)
 #define RASPA_PROC_START        _IO(RASPA_IOC_MAGIC, 3)
 #define RASPA_USERPROC_FINISHED _IOW(RASPA_IOC_MAGIC, 4, int)
 #define RASPA_PROC_STOP         _IO(RASPA_IOC_MAGIC, 5)
+#define AUDIO_SET_FORMAT		_IOW(RASPA_IOC_MAGIC, 6, unsigned int)
+#define AUDIO_SET_RATE			_IOW(RASPA_IOC_MAGIC, 7, unsigned int)
+#define AUDIO_SET_BUFFER		_IOW(RASPA_IOC_MAGIC, 8, unsigned int)
 
-#define RASPA_PROCESSING_TASK_PRIO 90
+#define AUDIO_GET_RATE			_IOR(RASPA_IOC_MAGIC, 9, unsigned int)
+#define AUDIO_GET_BUFFER_SIZE	_IOR(RASPA_IOC_MAGIC, 10, unsigned int)
+
+#define SND_SOC_DAI_FORMAT_I2S          1 /* I2S mode */
+
+#define SND_SOC_DAIFMT_CBP_CFP		(1 << 12) /* codec clk provider & frame provider */
+#define SND_SOC_DAIFMT_CBC_CFP		(2 << 12) /* codec clk consumer & frame provider */
+#define SND_SOC_DAIFMT_CBP_CFC		(3 << 12) /* codec clk provider & frame consumer */
+#define SND_SOC_DAIFMT_CBC_CFC		(4 << 12) /* codec clk consumer & frame consumer */
+
+/* previous definitions kept for backwards-compatibility, do not use in new contributions */
+#define SND_SOC_DAIFMT_CBM_CFM		SND_SOC_DAIFMT_CBP_CFP
+#define SND_SOC_DAIFMT_CBS_CFM		SND_SOC_DAIFMT_CBC_CFP
+#define SND_SOC_DAIFMT_CBM_CFS		SND_SOC_DAIFMT_CBP_CFC
+#define SND_SOC_DAIFMT_CBS_CFS		SND_SOC_DAIFMT_CBC_CFC
+
+#define RASPA_PROCESSING_TASK_PRIO 99
 
 namespace driver_conf {
 
@@ -49,10 +68,10 @@ constexpr int REQUIRED_MIN_VER = 3;
 /**
  * device paths
  */
-constexpr char DEVICE_NAME[] = "/dev/rtdm/audio_rtdm";
+constexpr char DEVICE_NAME[] = "/dev/aml-sound";
 
 // Driver parameter definitions
-constexpr char PARAM_ROOT_PATH[] = "/sys/class/audio_rtdm/";
+constexpr char PARAM_ROOT_PATH[] = "/sys/class/audio_rt/";
 constexpr size_t PARAM_VAL_STR_LEN = 25;
 
 constexpr char SAMPLE_RATE_PARAM[] = "audio_sampling_rate";

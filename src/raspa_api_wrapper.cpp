@@ -34,6 +34,11 @@ int raspa_init()
     return raspa_pimpl.init();
 }
 
+int raspa_set_sample_rate(float rate)
+{
+    return raspa_pimpl.set_sample_rate(rate);
+}
+
 int raspa_open(int buffer_size,
                RaspaProcessCallback process_callback,
                void* user_data,

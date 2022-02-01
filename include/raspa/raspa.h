@@ -83,7 +83,7 @@ int raspa_open(int buffer_size,
  *               successful, 0.0 if not.
  */
 float raspa_get_sampling_rate();
-
+int raspa_set_sample_rate(float rate);
 /**
  * @brief Get the number of input channels of the underlying codec. Should be
  *        called after raspa_open()

@@ -15,14 +15,14 @@ option(RASPA_WITH_TESTS "Build and run unit tests" ON)
 #  Cross compilation  #
 #######################
 
-set(XENOMAI_BASE_DIR "/usr/xenomai" CACHE STRING "xenomai base dir path")
+set(XENOMAI_BASE_DIR "/opt/evl" CACHE STRING "xenomai base dir path")
 
 if(NOT "$ENV{CMAKE_SYSROOT}" STREQUAL "")
     set(CMAKE_SYSROOT "$ENV{CMAKE_SYSROOT}")
     message("ENV_CMAKE_SYSROOT = " $ENV{CMAKE_SYSROOT})
 endif()
 if(NOT "${CMAKE_SYSROOT}" STREQUAL "")
-    set(XENOMAI_BASE_DIR "${CMAKE_SYSROOT}/usr/xenomai")
+    set(XENOMAI_BASE_DIR "${CMAKE_SYSROOT}/opt/evl")
     message("XENOMAI_BASE_DIR is " ${XENOMAI_BASE_DIR})
 endif()
 
@@ -36,17 +36,16 @@ endif()
 function(add_xenomai_to_target target)
 
     # from `xeno-config --skin=posix --cflags`
-    set(XENOMAI_C_FLAGS "-D_GNU_SOURCE -D_REENTRANT -D__COBALT__ -D__COBALT_WRAP__")
+    set(XENOMAI_C_FLAGS "-Wl,--no-as-needed -D_GNU_SOURCE -D_REENTRANT ")
 
     set(XENOMAI_INCLUDE_DIRS
         ${XENOMAI_BASE_DIR}/include
-        ${XENOMAI_BASE_DIR}/include/cobalt
     )
-
-    find_library(COBALT_LIB cobalt HINTS ${XENOMAI_BASE_DIR}/lib)
+    message("XENOMAI_BASE_DIR is " ${XENOMAI_BASE_DIR})
+    find_library(EVL_LIB evl HINTS ${XENOMAI_BASE_DIR}/lib)
     target_compile_options(${target} PRIVATE ${XENOMAI_C_FLAGS})
     target_include_directories(${target} PRIVATE ${XENOMAI_INCLUDE_DIRS})
-    target_link_libraries(${target} PRIVATE ${COBALT_LIB} rt m)
+    target_link_libraries(${target} PRIVATE ${EVL_LIB}  rt m)
 endfunction()
 
 ####################
@@ -73,7 +72,7 @@ target_include_directories(raspa PRIVATE ${PROJECT_SOURCE_DIR}/src/)
 target_link_libraries(raspa PRIVATE pthread audio_control_protocol fifo)
 
 set_property(TARGET raspa PROPERTY CXX_STANDARD 17)
-target_compile_options(raspa PRIVATE -Wall -Wextra -ffast-math -feliminate-unused-debug-types -fno-exceptions)
+target_compile_options(raspa PRIVATE -Wall -Wextra -ffast-math -g -feliminate-unused-debug-types -fno-exceptions)
 
 #############
 #  Install  #
